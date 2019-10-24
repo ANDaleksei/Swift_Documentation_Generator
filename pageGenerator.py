@@ -37,7 +37,7 @@ def card(object):
 	content = listFunctions(object.functions)
 	return """
 	<div class="card bg-primary mb-3">
-	  <div class="card-header"> %s </div>
+	  <div class="card-header text-white"> %s </div>
 	  <div class="card-body">
 	    %s
 	  </div>
@@ -70,7 +70,7 @@ def functionCollapse(function):
 	      </div>
 	    </div>
 	  </div> 
-	""" % (id, id, function.name, id, function.comment.replace('\n', '<br>'))
+	""" % (id, id, function.name.replace('<', '&lt'), id, function.comment.replace('\n', '<br>'))
 
 class SwiftObject:
 	name = ""

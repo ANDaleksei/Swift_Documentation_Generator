@@ -58,13 +58,14 @@ def getObjects(text):
 		if re.search('(^|\\s*)(class|struct|enum|protocol)\\s', line):
 			obj = SwiftObject()
 			obj.name = line[:-1]
+			obj.functions = list()
 			objects.append(obj)
 			currentObject = obj
-		elif line.find('{') != -1:
+		elif line.find('}') != -1:
 			currentObject = None
 		elif re.search('(^|\\s*)(func)\\s', line):
 			function = Function()
-			function.comment = comment
+			function.comment = comment if len(comment) > 0 else "No comment"
 			function.name = line
 			comment = ""
 			if currentObject is None:
@@ -77,16 +78,20 @@ def getObjects(text):
 			comment = ""
 	return objects
 
-file = open('example.swift', mode='r')
-text = file.read()
-file.close()
-interface = removeBody(text)
-textWithoutBreaking = removeBreakLines(interface)
-onlyNeededStaff = removeVarsAndEmptyLines(textWithoutBreaking)
-objects = getObjects(onlyNeededStaff)
-text = generatePage(objects)
-print(text)
+def parseFile(path, workingDirectory, name):
+	file = open('%s%s.swift' % (path, name), mode='r')
+	text = file.read()
+	file.close()
+	interface = removeBody(text)
+	textWithoutBreaking = removeBreakLines(interface)
+	onlyNeededStaff = removeVarsAndEmptyLines(textWithoutBreaking)
+	objects = getObjects(onlyNeededStaff)
+	text = generatePage(objects)
+	page = open('%s%s.html' % (workingDirectory, name), mode='w')
+	page.write(text)
+	page.close()
 
+parseFile("", "", "example")
 
 
 
