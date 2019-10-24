@@ -79,7 +79,7 @@ def getObjects(text):
 	return objects
 
 def parseFile(path, workingDirectory, name):
-	file = open('%s%s.swift' % (path, name), mode='r')
+	file = open('%s/%s.swift' % (path, name), mode='r')
 	text = file.read()
 	file.close()
 	interface = removeBody(text)
@@ -87,11 +87,11 @@ def parseFile(path, workingDirectory, name):
 	onlyNeededStaff = removeVarsAndEmptyLines(textWithoutBreaking)
 	objects = getObjects(onlyNeededStaff)
 	text = generatePage(objects)
-	page = open('%s%s.html' % (workingDirectory, name), mode='w')
+	page = open('%s/%s/%s.html' % (workingDirectory, path, name), mode='w')
 	page.write(text)
 	page.close()
 
-parseFile("", "", "example")
+#parseFile("", "", "example")
 
 
 
