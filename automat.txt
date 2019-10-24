@@ -1,0 +1,15 @@
+Basic states:
+• Global
+• Internal
+• Object -> class/struct/enum/protocol name : (condorm1, conform2, ...)? {
+• funcDecl -> func name ( args ) -> type
+• func -> func name ( args ) -> type {
+
+Additional and separate state:
+• comment
+
+From global:
+• find object, find func
+
+From internal:
+• find func, exit
