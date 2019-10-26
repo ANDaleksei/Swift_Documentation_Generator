@@ -35,14 +35,29 @@ def generatePage(objects):
 
 def card(object):
 	content = listFunctions(object.functions)
+	declarations = makeDeclarations(object.declarations)
 	return """
 	<div class="card bg-primary mb-3">
 	  <div class="card-header text-white"> %s </div>
 	  <div class="card-body">
+	  	%s
 	    %s
 	  </div>
 	</div>
-	""" % (object.name, content)
+	""" % (object.name, declarations, content)
+
+def makeDeclarations(declarations):
+	content = "\n".join([makeOneRow(declaration) for declaration in declarations])
+	return """
+	<div class="card text-primary">
+	  <ul class="list-group list-group-flush">
+	    %s
+	  </ul>
+	</div>
+	""" % content
+
+def makeOneRow(text):
+	return '<li class="list-group-item">%s</li>' % (text.replace('<', '&lt'))
 
 def listFunctions(functions):
 	text = "\n".join([functionCollapse(func) + "\n" for func in functions])
@@ -74,6 +89,7 @@ def functionCollapse(function):
 
 class SwiftObject:
 	name = ""
+	declarations = list()
 	functions = list()
 
 
