@@ -42,8 +42,3 @@ def makeList(references):
 
 def makeOneRow(reference):
 	return '<li class="list-group-item"><a href="%s">%s</a></li>' % (reference[1], reference[0])
-
-
-
-
-

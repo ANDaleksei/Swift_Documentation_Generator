@@ -5,6 +5,8 @@ from generateDirectoryPage import *
 from os import listdir, mkdir
 import sys
 
+# inputs: path to directory and files it contains
+# output: returns only directories or swift files
 def preprocessFilenames(path, files):
 	result = list()
 	for file in files:
@@ -15,6 +17,8 @@ def preprocessFilenames(path, files):
 			result.append(file)
 	return result
 
+# inputs: path to directory and files it contains
+# output: content of md file
 def parseMD(path, files):
 	for file in files:
 		fullname = (path + "/" + file)
@@ -25,6 +29,9 @@ def parseMD(path, files):
 			return text
 	return "No catalog description"
 
+# inputs: path to project (prefix + path), workingDirectory is a directory where we'll store documentation
+# outputs: classes references across all project
+# this function create all html files for each swift file in input project
 def parseDirectory(prefix, path, workingDirectory):
 	references = dict()
 	allPath = prefix + path
@@ -59,8 +66,3 @@ index = generateIndex("Yaza", "testOutput/" + rootProject + ".html", sorted_refe
 page = open("index.html", mode='w')
 page.write(index)
 page.close()
-
-
-
-
-

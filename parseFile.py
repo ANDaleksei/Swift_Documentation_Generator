@@ -143,12 +143,3 @@ def parseFile(prefix, path, workingDirectory, name):
 	classReference = list(filter(lambda swiftObject: not swiftObject.name.find("extension") != -1 and not swiftObject.name.find("Global") != -1, objects))
 	processedReferences = { getObjectName(swiftObject.name): pageName for swiftObject in classReference }
 	return dict(processedReferences)
-
-
-
-
-
-
-
-
-
