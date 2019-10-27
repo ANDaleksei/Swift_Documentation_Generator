@@ -6,7 +6,7 @@ def randomString(stringLength=10):
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(stringLength))
 
-def generatePage(objects):
+def generatePage(fileComment, objects):
 	body = "\n".join([card(object) + "\n" for object in objects])
 	return """
 	<!doctype html>
@@ -22,6 +22,7 @@ def generatePage(objects):
 	    <title>Hello, world!</title>
 	  </head>
 	  <body>
+	  	<h5 class="alert alert-light text-primary">%s</h5>
 	    %s
 
 	    <!-- Optional JavaScript -->
@@ -31,20 +32,20 @@ def generatePage(objects):
 	    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 	  </body>
 	</html>
-	""" % body
+	""" % (fileComment.replace('//', '<br>'), body)
 
 def card(object):
 	content = listFunctions(object.functions)
 	declarations = makeDeclarations(object.declarations)
 	return """
 	<div class="card bg-primary mb-3">
-	  <div class="card-header text-white"> %s </div>
+	  <div class="card-header text-white"> %s<br>%s </div>
 	  <div class="card-body">
 	  	%s
 	    %s
 	  </div>
 	</div>
-	""" % (object.name, declarations, content)
+	""" % (object.comment.replace("\n", "<br />"), object.name, declarations, content)
 
 def makeDeclarations(declarations):
 	content = "\n".join([makeOneRow(declaration) for declaration in declarations])
@@ -85,10 +86,11 @@ def functionCollapse(function):
 	      </div>
 	    </div>
 	  </div> 
-	""" % (id, id, function.name.replace('<', '&lt'), id, function.comment.replace('\n', '<br>'))
+	""" % (id, id, function.name.replace('<', '&lt'), id, function.comment.replace('///', '<br>').replace('//', ''))
 
 class SwiftObject:
 	name = ""
+	comment = ""
 	declarations = list()
 	functions = list()
 

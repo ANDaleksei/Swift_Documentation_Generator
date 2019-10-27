@@ -1,5 +1,5 @@
-def generatePage(directory, files, md):
-	body = makeList(directory, files)
+def generateIndex(projectName, rootPage, references):
+	referencesContent = makeList(references)
 	return """
 	<!doctype html>
 	<html lang="en">
@@ -11,10 +11,16 @@ def generatePage(directory, files, md):
 	    <!-- Bootstrap CSS -->
 	    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-	    <title>Hello, world!</title>
+	    <title>Documentation generator!</title>
 	  </head>
 	  <body>
-	  	<h4 class="alert alert-light text-primary">%s</h4>
+
+	  	<h1 class="alert alert-light">%s</h1>
+	  	<p class="alert alert-light">Swift gendoc 1.0.0</p>
+	  	<p class="alert alert-light" style="font-size: 0.75em">Generation date: 2019-10-26</p>
+	  	<h3 class="alert alert-light"><a href="%s">Project Documentation</a></h3>
+	  	<h4 class="alert alert-light">Classes references:</h4>
+
 	    %s
 
 	    <!-- Optional JavaScript -->
@@ -24,18 +30,20 @@ def generatePage(directory, files, md):
 	    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 	  </body>
 	</html>
-	""" % (md.replace("\n", "<br />"), body)
+	""" % (projectName, rootPage, referencesContent)
 
-def makeList(directory, files):
-	content = "\n".join([makeOneRow(directory, file) for file in files])
+def makeList(references):
+	content = "\n".join([makeOneRow(reference) for reference in references])
 	return """
 	<ul class="list-group">
 	  %s
 	</ul>
 	""" % content
 
+def makeOneRow(reference):
+	return '<li class="list-group-item"><a href="%s">%s</a></li>' % (reference[1], reference[0])
 
-def makeOneRow(directory, file):
-	isFile = file.find('.swift') != -1
-	folderAdd = "" if isFile else " (folder)"
-	return '<li class="list-group-item"><a href="%s">%s</a></li>' % ((directory + "/" + file.replace(".swift", "") + ".html"), file + folderAdd)
+
+
+
+
