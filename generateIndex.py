@@ -17,7 +17,7 @@ def generateIndex(projectName, rootPage, references):
 
 	  	<h1 class="alert alert-light">%s</h1>
 	  	<p class="alert alert-light">Swift gendoc 1.0.0</p>
-	  	<p class="alert alert-light" style="font-size: 0.75em">Generation date: 2019-10-26</p>
+	  	<p class="alert alert-light" style="font-size: 0.75em">Generation date: 2019-11-01</p>
 	  	<h3 class="alert alert-light"><a href="%s">Project Documentation</a></h3>
 	  	<h4 class="alert alert-light">Classes references:</h4>
 

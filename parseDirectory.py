@@ -4,6 +4,7 @@ from os.path import *
 from generateDirectoryPage import *
 from os import listdir, mkdir
 import sys
+import argparse
 
 # inputs: path to directory and files it contains
 # output: returns only directories or swift files
@@ -51,18 +52,23 @@ def parseDirectory(prefix, path, workingDirectory):
 	return references
 
 
-if len(sys.argv) != 2:
-	sys.exit()
+def parseProject(projectPath):
 
-projectPath = sys.argv[1]
-rootProject = basename(projectPath)
-if not exists("testOutput"):
-	mkdir("testOutput")
+	rootProject = basename(projectPath)
+	if not exists("Documentation"):
+		mkdir("Documentation")
 
-references = parseDirectory(dirname(projectPath) + "/", rootProject, "testOutput")
-sorted_references = sorted(references.items(), key=lambda kv: kv[0])
+	references = parseDirectory(dirname(projectPath) + "/", rootProject, "Documentation")
+	sorted_references = sorted(references.items(), key=lambda kv: kv[0])
 
-index = generateIndex("Yaza", "testOutput/" + rootProject + ".html", sorted_references)
-page = open("index.html", mode='w')
-page.write(index)
-page.close()
+	index = generateIndex(rootProject, "Documentation/" + rootProject + ".html", sorted_references)
+	page = open("index.html", mode='w')
+	page.write(index)
+	page.close()
+
+	
+parser = argparse.ArgumentParser(description='Swift documentation generator')
+parser.add_argument("--path", help="Path to the folder with swift files", required=True)
+args = parser.parse_args()
+parseProject(args.path)
+exit()
