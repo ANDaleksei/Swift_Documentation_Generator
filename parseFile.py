@@ -1,9 +1,9 @@
 import re
 from pageGenerator import *
 
-accessIdentifier = "(open|public|internal|private(set)|private|fileprivate)?"
+accessIdentifier = "((open|public|internal|private(set)|private|fileprivate)(\\s+))?"
 additionalPropertyWords = "((override)?(\\s+)(class|static)?)?"
-objectPrefix = "^(\\s*)" + accessIdentifier + "(\\s+final)?" + "(\\s*)"
+objectPrefix = "^(\\s*)" + accessIdentifier + "(final(\\s+))?"
 propertyPrefix = "^(\\s*)" + accessIdentifier + "(\\s*)" + additionalPropertyWords + "(\\s*)"
 funcPattern = "^(\\s*)" + accessIdentifier + "(\\s*)" + additionalPropertyWords + "(\\s*)func\\s"
 initPrefix = "^(\\s*)((convenience|required)(\\s*))?"
@@ -133,7 +133,7 @@ def getObjectName(objName):
 	return objName.partition(":")[0].partition("<")[0].split()[-1]
 
 def parseFile(prefix, path, workingDirectory, name):
-	filename = '%s/%s.swift' % (prefix + path, name)
+	filename = '%s%s.swift' % (prefix + path, name)
 	print("Parsing file %s" % filename)
 	file = open(filename, mode='r')
 	text = file.read()

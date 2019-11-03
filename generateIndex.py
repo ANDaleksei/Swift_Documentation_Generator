@@ -19,7 +19,7 @@ def randomString(stringLength=10):
     return ''.join(random.choice(letters) for i in range(stringLength))
 
 def generateIndex(projectName, rootPage, directory):
-	referencesContent = makeDirectoryHierachy(directory)
+	referencesContent = makeDirectoryHierachy(directory) if isinstance(directory, Directory) else makeFileRow(directory)
 	return """
 	<!doctype html>
 	<html lang="en">

@@ -41,12 +41,12 @@ def parseDirectory(prefix, path, workingDirectory):
 	if isfile(allPath) and allPath.endswith(".swift"):
 		name = basename(path)[:-6]
 		path = dirname(path) + "/"
-		references.update(parseFile(prefix, path, workingDirectory, name))
+		references.update(parseFile(prefix, path + "/", workingDirectory, name))
 		return references, File(basename(allPath),'%s/%s%s.html' % (workingDirectory, path, name))
 
 		name = basename(path)[:-6]
 		path = dirname(path) + "/"
-		references.update(parseFile(prefix, path, workingDirectory, name))
+		references.update(parseFile(prefix, path + "/", workingDirectory, name))
 		return references, File(basename(allPath, '%s/%s%s.html' % (workingDirectory, path, name)))
 	elif isdir(allPath):
 		directory = Directory(basename(allPath), workingDirectory + "/" + path + ".html")
@@ -69,13 +69,21 @@ def parseDirectory(prefix, path, workingDirectory):
 
 def parseProject(projectPath, outputPath):
 
-	rootProject = basename(projectPath)
+	projectName = basename(projectPath)
 	if not exists(outputPath):
 		mkdir(outputPath)
 
-	references, rootDirectory = parseDirectory(dirname(projectPath) + "/", rootProject, outputPath)
+	prefix = dirname(projectPath) + "/" if len(dirname(projectPath)) > 0 else ""
+	if isfile(projectPath) and projectPath.endswith(".swift"):
+		path = "/" if len(dirname(projectPath)) > 0 else ""
+		references = parseFile(dirname(projectPath), path, outputPath, basename(projectPath)[:-6])
+		rootDirectory = File(basename(projectPath),'%s.html' % (outputPath + '/' + basename(projectPath)[:-6]))
+		rootProject = outputPath + "/" + projectName[:-6] + ".html"
+	else:
+		references, rootDirectory = parseDirectory(prefix, projectName, outputPath)
+		rootProject = outputPath + "/" + projectName + ".html"
 	sorted_references = sorted(references.items(), key=lambda kv: kv[0])
-	index = generateIndex(rootProject, outputPath + "/" + rootProject + ".html", rootDirectory)
+	index = generateIndex(projectName, rootProject, rootDirectory)
 	page = open("index.html", mode='w')
 	page.write(index)
 	page.close()
