@@ -1,5 +1,25 @@
-def generateIndex(projectName, rootPage, references):
-	referencesContent = makeList(references)
+import random
+import string
+from datetime import date
+
+class Directory:
+	def __init__(self, name, link):
+		self.name = name
+		self.link = link
+		self.files = list()
+
+class File:
+	def __init__(self, name, link):
+		self.name = name
+		self.link = link
+
+def randomString(stringLength=10):
+    """Generate a random string of fixed length """
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(stringLength))
+
+def generateIndex(projectName, rootPage, directory):
+	referencesContent = makeDirectoryHierachy(directory)
 	return """
 	<!doctype html>
 	<html lang="en">
@@ -17,9 +37,9 @@ def generateIndex(projectName, rootPage, references):
 
 	  	<h1 class="alert alert-light">%s</h1>
 	  	<p class="alert alert-light">Swift gendoc 1.0.0</p>
-	  	<p class="alert alert-light" style="font-size: 0.75em">Generation date: 2019-11-01</p>
+	  	<p class="alert alert-light" style="font-size: 0.75em">Generation date: %s</p>
 	  	<h3 class="alert alert-light"><a href="%s">Project Documentation</a></h3>
-	  	<h4 class="alert alert-light">Classes references:</h4>
+	  	<h3 class="alert alert-light"><a href="references.html">Classes References</a></h3>
 
 	    %s
 
@@ -30,15 +50,37 @@ def generateIndex(projectName, rootPage, references):
 	    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 	  </body>
 	</html>
-	""" % (projectName, rootPage, referencesContent)
+	""" % (projectName, date.today(), rootPage, referencesContent)
 
-def makeList(references):
-	content = "\n".join([makeOneRow(reference) for reference in references])
+def makeDirectoryHierachy(directory):
+	directoryContent = "\n".join([makeDirectoryHierachy(file) if isinstance(file, Directory) else makeFileRow(file) for file in directory.files])
+	idHead = randomString()
+	idCollapse = randomString()
 	return """
-	<ul class="list-group">
-	  %s
-	</ul>
-	""" % content
+	<div class="card">
+         <div class="card-header" id="%s">
+            <h5 class="mb-0">
+              	<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#%s" aria-expanded="true" aria-controls="%s">
+                	%s
+              	</button> <a href="%s#%s">(link here)</a>
+            </h5>
+        </div>
+		<div id="%s" class="collapse show" aria-labelledby="%s">
+            <div class="card-body">
+              		%s
+            </div>
+         </div>
+    </div>
+	""" % (idHead, idCollapse, idCollapse, directory.name, directory.link, idHead, idCollapse, idHead, directoryContent)
 
-def makeOneRow(reference):
-	return '<li class="list-group-item"><a href="%s">%s</a></li>' % (reference[1], reference[0])
+def makeFileRow(file):
+	idHead = randomString()
+	return """
+	<div class="card">
+         <div class="card-header" id="%s">
+            <h5 class="mb-0">
+              	<a href="%s#%s">%s</a>
+            </h5>
+        </div>
+    </div>
+	""" % (idHead, file.link, idHead, file.name)

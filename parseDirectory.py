@@ -1,5 +1,6 @@
 from parseFile import *
 from generateIndex import *
+from generateReferences import *
 from os.path import *
 from generateDirectoryPage import *
 from os import listdir, mkdir
@@ -38,8 +39,17 @@ def parseDirectory(prefix, path, workingDirectory):
 	allPath = prefix + path
 	md = ""
 	if isfile(allPath) and allPath.endswith(".swift"):
-		references.update(parseFile(prefix, dirname(path) + "/", workingDirectory, basename(path)[:-6]))
+		name = basename(path)[:-6]
+		path = dirname(path) + "/"
+		references.update(parseFile(prefix, path, workingDirectory, name))
+		return references, File(basename(allPath),'%s/%s%s.html' % (workingDirectory, path, name))
+
+		name = basename(path)[:-6]
+		path = dirname(path) + "/"
+		references.update(parseFile(prefix, path, workingDirectory, name))
+		return references, File(basename(allPath, '%s/%s%s.html' % (workingDirectory, path, name)))
 	elif isdir(allPath):
+		directory = Directory(basename(allPath), workingDirectory + "/" + path + ".html")
 		if not exists(workingDirectory + "/" + path):
 			mkdir(workingDirectory + "/" + path)
 		files = listdir(allPath + "/")
@@ -48,27 +58,35 @@ def parseDirectory(prefix, path, workingDirectory):
 		file.write(generatePage(basename(path), preprocessFilenames(allPath, files), md))
 		file.close()
 		for file in files:
-			references.update(parseDirectory(prefix, path + "/" + file, workingDirectory))
-	return references
+			filereferences, fileObj = parseDirectory(prefix, path + "/" + file, workingDirectory)
+			references.update(filereferences)
+			if fileObj is not None:
+				directory.files.append(fileObj)
+		return references, directory
+	else:
+		return  dict(), None
 
 
-def parseProject(projectPath):
+def parseProject(projectPath, outputPath):
 
 	rootProject = basename(projectPath)
-	if not exists("Documentation"):
-		mkdir("Documentation")
+	if not exists(outputPath):
+		mkdir(outputPath)
 
-	references = parseDirectory(dirname(projectPath) + "/", rootProject, "Documentation")
+	references, rootDirectory = parseDirectory(dirname(projectPath) + "/", rootProject, outputPath)
 	sorted_references = sorted(references.items(), key=lambda kv: kv[0])
-
-	index = generateIndex(rootProject, "Documentation/" + rootProject + ".html", sorted_references)
+	index = generateIndex(rootProject, outputPath + "/" + rootProject + ".html", rootDirectory)
 	page = open("index.html", mode='w')
 	page.write(index)
 	page.close()
+	refFile = open("references.html", mode='w')
+	refFile.write(generateReferences(sorted_references))
+	refFile.close()
 
-	
+
 parser = argparse.ArgumentParser(description='Swift documentation generator')
 parser.add_argument("--path", help="Path to the folder with swift files", required=True)
+parser.add_argument("--outputPath", help="Name of the folder where output will be saved", required=True)
 args = parser.parse_args()
-parseProject(args.path)
+parseProject(args.path, args.outputPath)
 exit()

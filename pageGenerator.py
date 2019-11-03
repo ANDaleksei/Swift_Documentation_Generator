@@ -1,6 +1,27 @@
 import random
 import string
 
+class SwiftObject:
+	name = ""
+	comment = ""
+	declarations = list()
+	functions = list()
+
+	def __init__(self, name, comment, declarations, functions):
+		self.name = name
+		self.comment = comment
+		self.declarations = declarations
+		self.functions = functions
+
+
+class Function:
+	comment = ""
+	name = ""
+
+	def __init__(self, name, comment):
+		self.name = name
+		self.comment = comment
+
 def randomString(stringLength=10):
     """Generate a random string of fixed length """
     letters = string.ascii_lowercase
@@ -38,8 +59,8 @@ def card(object):
 	content = listFunctions(object.functions)
 	declarations = makeDeclarations(object.declarations)
 	return """
-	<div class="card bg-primary mb-3">
-	  <div class="card-header text-white"> %s<br>%s </div>
+	<div class="card bg-light mb-3">
+	  <div class="card-header text-dark"> %s<br>%s </div>
 	  <div class="card-body">
 	  	%s
 	    %s
@@ -50,7 +71,7 @@ def card(object):
 def makeDeclarations(declarations):
 	content = "\n".join([makeOneRow(declaration) for declaration in declarations])
 	return """
-	<div class="card text-primary">
+	<div class="card text-dark">
 	  <ul class="list-group list-group-flush">
 	    %s
 	  </ul>
@@ -63,38 +84,23 @@ def makeOneRow(text):
 def listFunctions(functions):
 	text = "\n".join([functionCollapse(func) + "\n" for func in functions])
 	return """
-	<div class="accordion" id="accordionExample">
 	  %s
-	</div>
 	""" % text
 
 def functionCollapse(function):
 	id = randomString()
 	return """
-	<div class="card">
-	    <div class="card-header" id="headingOne">
-	      <h2 class="mb-0">
-	        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#%s" aria-expanded="true" aria-controls="%s">
-	          %s
-	        </button>
-	      </h2>
-	    </div>
+ 		<p>
+        	<button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#%s" aria-expanded="false" aria-controls="%s">%s</button>
+      	</p>
+      	<div class="row">
+        	<div class="col">
+         		<div class="collapse multi-collapse" id="%s">
+            		<div class="card card-body">
+              			%s
+            		</div>
+          		</div>
+        	</div>
+      	</div>
 
-	    <div id="%s" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-	      <div class="card-body text-success">
-	        %s
-	      </div>
-	    </div>
-	  </div> 
 	""" % (id, id, function.name.replace('<', '&lt'), id, function.comment.replace('///', '<br>').replace('//', ''))
-
-class SwiftObject:
-	name = ""
-	comment = ""
-	declarations = list()
-	functions = list()
-
-
-class Function:
-	comment = ""
-	name = ""
