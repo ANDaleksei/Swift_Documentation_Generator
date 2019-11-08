@@ -2,11 +2,11 @@ import re
 from pageGenerator import *
 
 accessIdentifier = "((open|public|internal|private(set)|private|fileprivate)(\\s+))?"
-additionalPropertyWords = "((override)?(\\s+)(class|static)?)?"
-objectPrefix = "^(\\s*)" + accessIdentifier + "(final(\\s+))?"
+additionalPropertyWords = "((override\\s+)?(class|static)?)?"
+objectPrefix = "^(\\s*)" + accessIdentifier + "(final\\s+)?(indirect\\s+)?"
 propertyPrefix = "^(\\s*)" + accessIdentifier + "(\\s*)" + additionalPropertyWords + "(\\s*)"
 funcPattern = "^(\\s*)" + accessIdentifier + "(\\s*)" + additionalPropertyWords + "(\\s*)func\\s"
-initPrefix = "^(\\s*)((convenience|required)(\\s*))?"
+initPrefix = "^(\\s*)" + accessIdentifier + "(\\s*)((convenience|required)(\\s*))?"
 initPattern = initPrefix + "init\\("
 funcOrInitPattern = "(%s|%s)" % (funcPattern, initPattern)
 

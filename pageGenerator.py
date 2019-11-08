@@ -60,13 +60,14 @@ def card(object):
 	declarations = makeDeclarations(object.declarations)
 	return """
 	<div class="card bg-light mb-3">
-	  <div class="card-header text-dark"> %s<br>%s </div>
+	  <div class="card-header text-success"> %s</div>
+	  <div class="card-header text-dark"> %s </div>
 	  <div class="card-body">
 	  	%s
 	    %s
 	  </div>
 	</div>
-	""" % (object.comment.replace("\n", "<br />"), object.name, declarations, content)
+	""" % (object.comment.replace(' /// ', '<br> /').replace(' // ', '<br> /'), object.name, declarations, content)
 
 def makeDeclarations(declarations):
 	content = "\n".join([makeOneRow(declaration) for declaration in declarations])
@@ -103,4 +104,4 @@ def functionCollapse(function):
         	</div>
       	</div>
 
-	""" % (id, id, function.name.replace('<', '&lt'), id, function.comment.replace('///', '<br>').replace('//', ''))
+	""" % (id, id, function.name.replace('<', '&lt'), id, function.comment.replace('///', '<br>').replace('//', '<br>'))
