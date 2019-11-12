@@ -6,6 +6,8 @@
 build/
 DerivedData/
 
+*.pyc
+
 ## Various settings
 *.pbxuser
 !default.pbxuser
